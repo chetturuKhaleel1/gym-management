@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const API_BASE_URL = "http://localhost:5000/api"; // ✅ Adjust as needed
+const API_BASE_URL = "https://gym-management-backend-0tn2.onrender.com/api";
 
 const AvailablePlans = () => {
   const [plans, setPlans] = useState([]);
@@ -11,15 +11,12 @@ const AvailablePlans = () => {
       const token = localStorage.getItem("token");
       const url = `${API_BASE_URL}/plans`;
       console.log("📡 Fetching plans from:", url);
-
       const res = await fetch(url, {
         headers: {
-          "Authorization": `Bearer ${token}`, // ✅ Include token for auth
+          "Authorization": `Bearer ${token}`, // Include token for auth
         },
       });
-
       const data = await res.json();
-
       if (res.ok) {
         setPlans(data);
       } else {
@@ -47,7 +44,6 @@ const AvailablePlans = () => {
   const handleBuy = async (plan) => {
     const token = localStorage.getItem('token');
     const key = import.meta.env.VITE_RAZORPAY_KEY_ID;
-
     try {
       const res = await fetch(`${API_BASE_URL}/payments/order`, {
         method: 'POST',
@@ -60,9 +56,7 @@ const AvailablePlans = () => {
           planId: plan._id,
         }),
       });
-
       const data = await res.json();
-
       const options = {
         key,
         amount: data.amount,
@@ -72,7 +66,6 @@ const AvailablePlans = () => {
         order_id: data.orderId,
         handler: async (response) => {
           console.log('📥 Razorpay response:', response);
-
           try {
             const verifyRes = await fetch(`${API_BASE_URL}/payments/verify`, {
               method: "POST",
@@ -88,7 +81,6 @@ const AvailablePlans = () => {
                 amount: plan.price,
               }),
             });
-
             const verifyData = await verifyRes.json();
             console.log("✅ Backend verification success:", verifyData);
             alert("✅ Payment verified & saved!");
@@ -105,7 +97,6 @@ const AvailablePlans = () => {
           color: '#6366f1',
         },
       };
-
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (err) {
@@ -115,6 +106,9 @@ const AvailablePlans = () => {
   };
 
   if (loading) return <p className="text-center p-4">Loading plans...</p>;
+
+
+
 
   return (
     <div className="p-6">
