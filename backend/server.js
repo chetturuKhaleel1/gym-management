@@ -1,11 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config(); // ✅ Load env first
-
 import express from 'express';
 import cors from 'cors';
-
 import connectDB from './config/db.js';
-
 // Import Routes
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
@@ -27,9 +24,22 @@ const PORT = process.env.PORT || 5000;
 // ✅ Connect to MongoDB
 connectDB();
 
-// ✅ CORS config
+// ✅ CORS config: allow local dev & deployed frontend
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://gym-management-frontend.onrender.com'
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173', // frontend Vite dev URL
+  origin: function (origin, callback) {
+    // allow requests with no origin (like curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true,
 }));
 
@@ -47,11 +57,11 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/coaches', coachRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/membership', membershipRoutes);
-// Add to app middleware
 app.use('/api/supplements', supplementRoutes);
 app.use('/api/diets', dietRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/billing", billRoutes);
+
 // ✅ Test route
 app.get('/', (req, res) => {
   res.send('✅ API is running...');
