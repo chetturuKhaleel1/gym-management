@@ -1,4 +1,8 @@
+import mongoose from "mongoose";
 import dotenv from "dotenv";
+import path from "path";
+
+
 
 // Load .env only in non-production environments
 if (process.env.NODE_ENV !== "production") {
