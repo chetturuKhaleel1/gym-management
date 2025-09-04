@@ -8,7 +8,8 @@ const AdminMembers = () => {
     const fetchMembers = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:5000/api/auth/users', {
+       const res = await fetch('https://gym-management-backend-0tn2.onrender.com/api/auth/users', {
+
           headers: {
             Authorization: `Bearer ${token}`,
           },
