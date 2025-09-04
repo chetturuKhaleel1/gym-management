@@ -14,9 +14,11 @@ const ManageMembers = () => {
     password: '',
   });
 
+  const BASE_URL = "https://gym-management-backend-0tn2.onrender.com";
+
   const fetchMembers = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/members');
+      const response = await fetch(`${BASE_URL}/api/members`);
       const data = await response.json();
       setMembers(data);
     } catch (error) {
@@ -29,48 +31,47 @@ const ManageMembers = () => {
   useEffect(() => {
     fetchMembers();
   }, []);
-const handleAddMember = async (e) => {
-  e.preventDefault();
-  try {
-   // ✅ Correct route (matches your backend)
-const res = await fetch('http://localhost:5000/api/users/add-member', {
 
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...newMember, role: 'member' }),
-    });
+  const handleAddMember = async (e) => {
+    e.preventDefault();
+    try {
+      // ✅ Correct route (matches your backend)
+      const res = await fetch(`${BASE_URL}/api/users/add-member`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...newMember, role: 'member' }),
+      });
 
-    const contentType = res.headers.get('content-type');
+      const contentType = res.headers.get('content-type');
 
-    if (!res.ok) {
-      // If response is NOT JSON, show raw text
-      if (!contentType || !contentType.includes('application/json')) {
-        const errorText = await res.text();
-        console.error('Server returned non-JSON:', errorText);
-        toast.error('❌ Server returned HTML instead of JSON');
+      if (!res.ok) {
+        // If response is NOT JSON, show raw text
+        if (!contentType || !contentType.includes('application/json')) {
+          const errorText = await res.text();
+          console.error('Server returned non-JSON:', errorText);
+          toast.error('❌ Server returned HTML instead of JSON');
+          return;
+        }
+
+        const errorData = await res.json();
+        toast.error(errorData.message || '❌ Failed to add member');
         return;
       }
 
-      const errorData = await res.json();
-      toast.error(errorData.message || '❌ Failed to add member');
-      return;
+      const data = await res.json();
+      toast.success('✅ Member added!');
+      setNewMember({ name: '', email: '', password: '' });
+      fetchMembers();
+    } catch (err) {
+      console.error('Add member error:', err);
+      toast.error('❌ Could not reach the server. Check API route.');
     }
-
-    const data = await res.json();
-    toast.success('✅ Member added!');
-    setNewMember({ name: '', email: '', password: '' });
-    fetchMembers();
-  } catch (err) {
-    console.error('Add member error:', err);
-    toast.error('❌ Could not reach the server. Check API route.');
-  }
-};
-
+  };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this member?')) return;
     try {
-      await fetch(`http://localhost:5000/api/members/${id}`, {
+      await fetch(`${BASE_URL}/api/members/${id}`, {
         method: 'DELETE',
       });
       setMembers(members.filter((member) => member._id !== id));
@@ -86,7 +87,7 @@ const res = await fetch('http://localhost:5000/api/users/add-member', {
 
   const handleSaveRole = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/members/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/members/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role: newRole }),
