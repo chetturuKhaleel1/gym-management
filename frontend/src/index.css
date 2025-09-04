@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+/* index.css */
+.export-fix,
+.export-fix * {
+  color: #000 !important;
+  background-color: #fff !important;
+  box-shadow: none !important;
+}
