@@ -15,7 +15,7 @@ export default function Coaches() {
 
   const fetchCoaches = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/coaches");
+     const res = await axios.get(`${BASE_URL}/api/coaches`);
       setCoaches(res.data);
     } catch (err) {
       console.error("Error fetching coaches:", err);
@@ -24,7 +24,7 @@ export default function Coaches() {
 
   const handleAddCoach = async () => {
     try {
-      await axios.post("http://localhost:5000/api/coaches", newCoach);
+await axios.post(`${BASE_URL}/api/coaches`, newCoach);
       setNewCoach({ name: "", coachId: "", contact: "", expiration: "" });
       fetchCoaches();
     } catch (err) {
@@ -34,7 +34,7 @@ export default function Coaches() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/coaches/${id}`);
+      await axios.delete(`${BASE_URL}/api/coaches/${id}`);
       fetchCoaches();
     } catch (err) {
       console.error("Error deleting coach:", err);
@@ -48,7 +48,7 @@ export default function Coaches() {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/coaches/${editingCoachId}`, editedCoach);
+     await axios.put(`${BASE_URL}/api/coaches/${editingCoachId}`, editedCoach);
       setEditingCoachId(null);
       setEditedCoach({});
       fetchCoaches();
