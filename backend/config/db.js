@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
 import dotenv from "dotenv";
-import path from "path";
 
-// ✅ Load .env from backend folder
-dotenv.config({ path: path.resolve("./backend/.env") });
+// Load .env only in non-production environments
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: path.resolve("./backend/.env") });
+}
 
 const connectDB = async () => {
   try {
@@ -11,8 +11,8 @@ const connectDB = async () => {
     console.log(`✅ Successfully connected to MongoDB`);
   } catch (error) {
     console.log(`❌ ERROR: ${error.message}`);
-    process.exit(1); // Stop the server if DB fails
+    process.exit(1);
   }
 };
-
 export default connectDB;
+
