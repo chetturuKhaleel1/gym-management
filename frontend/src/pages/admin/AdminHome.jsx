@@ -9,7 +9,8 @@ const AdminHome = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const res = await fetch("http://localhost:5000/api/admin/stats", {
+       const res = await fetch("https://gym-management-backend-0tn2.onrender.com/api/admin/stats", {
+
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
