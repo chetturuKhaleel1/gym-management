@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+const BASE_URL = "https://gym-management-backend-0tn2.onrender.com";
+
 const Register = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -15,16 +17,13 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
+      const res = await fetch(`${BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-
       const data = await res.json();
-
       if (res.ok) {
         toast.success('Registered successfully');
         navigate('/login');
