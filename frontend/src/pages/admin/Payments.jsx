@@ -9,46 +9,42 @@ const Payments = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const fetchPayments = async () => {
-    const token = localStorage.getItem("token");
+const BASE_URL = "https://gym-management-backend-0tn2.onrender.com";
 
-    if (!token) {
-      setError("User not logged in");
+const fetchPayments = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    setError("User not logged in");
+    navigate("/login");
+    return;
+  }
+  try {
+    const res = await fetch(`${BASE_URL}/api/payments`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.status === 401 || res.status === 403) {
+      setError("Unauthorized. Please login again.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       navigate("/login");
       return;
     }
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Failed to fetch");
+    const paymentsData = data.payments || data;
+    if (!Array.isArray(paymentsData)) throw new Error("Expected array");
+    setPayments(paymentsData);
+  } catch (err) {
+    console.error(err);
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      const res = await fetch("http://localhost:5000/api/payments", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (res.status === 401 || res.status === 403) {
-        setError("Unauthorized. Please login again.");
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        navigate("/login");
-        return;
-      }
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || "Failed to fetch");
-
-      const paymentsData = data.payments || data;
-      if (!Array.isArray(paymentsData)) throw new Error("Expected array");
-
-      setPayments(paymentsData);
-    } catch (err) {
-      console.error(err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchPayments();
