@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+const BASE_URL = "https://gym-management-backend-0tn2.onrender.com";
+
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -15,27 +17,22 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(`${BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       const data = await res.json();
-
       if (!res.ok) {
         toast.error(data.error || 'Login failed');
         setLoading(false);
         return;
       }
-
       if (data.token && data.user) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         toast.success("Login successful!");
-
         const role = data.user.role?.toLowerCase();
         if (role === 'admin') {
           navigate('/admin-dashboard');
@@ -47,7 +44,6 @@ const Login = () => {
       } else {
         toast.error("Invalid response from server");
       }
-
     } catch (err) {
       toast.error("Something went wrong");
     } finally {
