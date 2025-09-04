@@ -10,14 +10,14 @@ const NotificationAssign = () => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const token = userInfo?.token;
 
+  const BASE_URL = "https://gym-management-backend-0tn2.onrender.com";
+
   const fetchMembers = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/users/members", {
+      const res = await fetch(`${BASE_URL}/api/users/members`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       if (!res.ok) throw new Error("Failed to fetch members");
-
       const data = await res.json();
       setMembers(data || []);
       console.log("✅ Members fetched:", data);
@@ -33,14 +33,12 @@ const NotificationAssign = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!title.trim() || !description.trim() || !selectedMember) {
       toast.error("Please fill all fields");
       return;
     }
-
     try {
-      const res = await fetch("http://localhost:5000/api/notifications/assign-monthly", {
+      const res = await fetch(`${BASE_URL}/api/notifications/assign-monthly`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,12 +51,10 @@ const NotificationAssign = () => {
           month: "July", // Optional: could be dynamic based on current month
         }),
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to assign notification");
       }
-
       toast.success("Notification assigned successfully ✅");
       setTitle("");
       setDescription("");
