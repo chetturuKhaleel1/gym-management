@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { FaCrown, FaGem, FaStar } from "react-icons/fa";
 
-const API_BASE = "/api";
+const API_BASE = "https://gym-management-backend-0tn2.onrender.com/api";
+
 
 // 🌙 Theme based on membership plan name
 const getPlanTheme = (name = "") => {
